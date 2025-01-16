@@ -20,18 +20,15 @@ void Move(ecs_iter_t* it) {
 
 void Controller(ecs_iter_t* it) {
     velocity_c* v = ecs_field(it, velocity_c, 1);
-    f32 speed = 100;
+    const f32 speed = 100;
+    const f32 jumpPower = 100;
 
     for (int i = 0; i < it->count; i++) {
         v[i].x = 0;
-        v[i].y = 0;
         f32 delta = 1;
 
         if (IsKeyDown(KEY_W)) {
-            v[i].y -= speed * delta;
-        }
-        if (IsKeyDown(KEY_S)) {
-            v[i].y += speed * delta;
+            v[i].y -= jumpPower * delta;
         }
         if (IsKeyDown(KEY_A)) {
             v[i].x -= speed * delta;

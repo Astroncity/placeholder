@@ -2,8 +2,14 @@
 #include "defs.h"
 #include "flecs.h"
 
-extern ecs_world_t* world;
-extern const u32 screenWidth;
-extern const u32 screenHeight;
-extern Font globalFont;
-extern v2* mouse;
+typedef struct State {
+    ecs_world_t* world;
+    Font globalFont;
+    v2* mouse;
+    u32 screenWidth;
+    u32 screenHeight;
+} State;
+
+extern State state;
+
+void initState(u32 screenWidth, u32 screenHeight);

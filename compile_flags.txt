@@ -2,3 +2,4 @@
 include/
 -L
 lib/
+-Wno-missing-field-initializer

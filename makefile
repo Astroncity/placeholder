@@ -1,7 +1,7 @@
 
 # Compiler and flags
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror -ggdb -L lib/ -I include/ -lraylib -lm -lflecs
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -Wno-missing-field-initializer -ggdb -L lib/ -I include/ -lraylib -lm -lflecs
 DEPFLAGS = -MMD -MP
 
 # Directories

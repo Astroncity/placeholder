@@ -1,0 +1,135 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/components/render.o",
+      "src/components/render.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/components/render.c",
+    "output": "/home/astro/projects/placeholder/build/components/render.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/components/transform.o",
+      "src/components/transform.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/components/transform.c",
+    "output": "/home/astro/projects/placeholder/build/components/transform.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/components/physics.o",
+      "src/components/physics.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/components/physics.c",
+    "output": "/home/astro/projects/placeholder/build/components/physics.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/core/main.o",
+      "src/core/main.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/core/main.c",
+    "output": "/home/astro/projects/placeholder/build/core/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/core/state.o",
+      "src/core/state.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/core/state.c",
+    "output": "/home/astro/projects/placeholder/build/core/state.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/core/uiFramework.o",
+      "src/core/uiFramework.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/core/uiFramework.c",
+    "output": "/home/astro/projects/placeholder/build/core/uiFramework.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/utils/window.o",
+      "src/utils/window.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/utils/window.c",
+    "output": "/home/astro/projects/placeholder/build/utils/window.o"
+  }
+]
