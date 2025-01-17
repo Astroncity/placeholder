@@ -7,13 +7,7 @@ ECS_COMPONENT_DECLARE(Collider);
 ECS_SYSTEM_DECLARE(PhysicsUpdate);
 ECS_SYSTEM_DECLARE(ResolveCollisions);
 
-void PhysicsUpdate(ecs_iter_t* it) {
-    velocity_c* v = ecs_field(it, velocity_c, 1);
-
-    for (int i = 0; i < it->count; i++) {
-        v[i].y += 9.8 * 10 * GetFrameTime();
-    }
-}
+void PhysicsUpdate(ecs_iter_t* it) { (void)it; }
 
 void ResolveCollisions(ecs_iter_t* it) {
     i32 n = ecs_query_count(it->query).entities;
@@ -59,7 +53,7 @@ void PhysicsImport(ecs_world_t* world) {
     ECS_MODULE(world, Physics);
     ECS_TAG_DEFINE(world, _physicsObj);
     ECS_COMPONENT_DEFINE(world, Collider);
-    ECS_SYSTEM_DEFINE(world, PhysicsUpdate, EcsOnUpdate,
+    ECS_SYSTEM_DEFINE(world, PhysicsUpdate, EcsPreUpdate,
                       _physicsObj, [out] transform.module.velocity_c);
 
     ecs_entity_t cols = ecs_system(

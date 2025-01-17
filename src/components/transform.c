@@ -3,10 +3,10 @@
 
 ECS_COMPONENT_DECLARE(position_c);
 ECS_COMPONENT_DECLARE(velocity_c);
+ECS_COMPONENT_DECLARE(PlayerController);
 
 ECS_SYSTEM_DECLARE(Move);
 ECS_SYSTEM_DECLARE(Controller);
-ECS_TAG_DECLARE(_controllable);
 
 void Move(ecs_iter_t* it) {
     position_c* p = ecs_field(it, position_c, 0);
@@ -20,14 +20,26 @@ void Move(ecs_iter_t* it) {
 
 void Controller(ecs_iter_t* it) {
     velocity_c* v = ecs_field(it, velocity_c, 1);
-    const f32 speed = 100;
-    const f32 jumpPower = 100;
+    PlayerController* cn = ecs_field(it, PlayerController, 0);
+    const f32 speedDef = 100;
+    const f32 jumpPower = 200;
+    printf("Is grounded: %d\n", cn[0].on_ground);
 
     for (int i = 0; i < it->count; i++) {
         v[i].x = 0;
         f32 delta = 1;
 
-        if (IsKeyDown(KEY_W)) {
+        if (!cn[i].on_ground) {
+            v[i].y += 9.8 * 40 * GetFrameTime();
+        }
+
+        f32 speed = speedDef;
+
+        if (IsKeyDown(KEY_LEFT_SHIFT)) {
+            speed *= 1.5;
+        }
+
+        if (IsKeyDown(KEY_W) && cn[i].on_ground) {
             v[i].y -= jumpPower * delta;
         }
         if (IsKeyDown(KEY_A)) {
@@ -36,6 +48,8 @@ void Controller(ecs_iter_t* it) {
         if (IsKeyDown(KEY_D)) {
             v[i].x += speed * delta;
         }
+
+        cn[i].on_ground = false;
     }
 }
 
@@ -43,7 +57,7 @@ void TransformModuleImport(ecs_world_t* world) {
     ECS_MODULE(world, TransformModule);
     ECS_COMPONENT_DEFINE(world, position_c);
     ECS_COMPONENT_DEFINE(world, velocity_c);
+    ECS_COMPONENT_DEFINE(world, PlayerController);
     ECS_SYSTEM_DEFINE(world, Move, EcsOnUpdate, position_c, velocity_c);
-    ECS_TAG_DEFINE(world, _controllable);
-    ECS_SYSTEM_DEFINE(world, Controller, EcsOnUpdate, _controllable, velocity_c);
+    ECS_SYSTEM_DEFINE(world, Controller, EcsOnUpdate, PlayerController, velocity_c);
 }
