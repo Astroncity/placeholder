@@ -29,7 +29,7 @@ void renderPlayer(ecs_entity_t e) {
 
 ecs_entity_t PlayerNew(void) {
     ecs_entity_t player = ecs_entity(state.world, {.name = "player"});
-    ecs_set(state.world, player, position_c, {0, 0});
+    ecs_set(state.world, player, position_c, {state.screenWidth / 2 - 16, 350});
     ecs_set(state.world, player, velocity_c, {0, 0});
     ecs_set(state.world, player, PlayerController, {false});
     ecs_add(state.world, player, _physicsObj);

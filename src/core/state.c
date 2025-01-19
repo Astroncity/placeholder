@@ -8,4 +8,6 @@ void initState(u32 screenWidth, u32 screenHeight) {
     state.mouse = malloc(sizeof(v2));
     state.screenWidth = screenWidth;
     state.screenHeight = screenHeight;
+    state.camera = (Camera2D){0};
+    state.camera.zoom = 1.0f;
 }

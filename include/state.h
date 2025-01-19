@@ -4,6 +4,7 @@
 
 typedef struct State {
     ecs_world_t* world;
+    Camera2D camera;
     Font globalFont;
     v2* mouse;
     u32 screenWidth;

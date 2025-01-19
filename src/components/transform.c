@@ -23,7 +23,6 @@ void Controller(ecs_iter_t* it) {
     PlayerController* cn = ecs_field(it, PlayerController, 0);
     const f32 speedDef = 100;
     const f32 jumpPower = 200;
-    printf("Is grounded: %d\n", cn[0].on_ground);
 
     for (int i = 0; i < it->count; i++) {
         v[i].x = 0;
