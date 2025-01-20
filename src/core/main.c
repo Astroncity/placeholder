@@ -15,32 +15,25 @@ void renderGen(ecs_entity_t e) {
     DrawRectangle(p->x, p->y, state.screenWidth, 256, GRUV_GREEN);
 }
 
-void drawBackground(i32 height) {
+void drawBackground(i32 h) {
     // TODO: use a shader for this
 
     // WARNING: temp value
-    const i32 maxHeight = 5000;
+    const i32 maxHeight = 10000;
+    const i32 height = abs(h);
 
-    const Color final = {164, 221, 219, 255};
-    const Color init = {23, 32, 56, 255};
+    const Color init = {164, 221, 219, 255};
+    const Color final = {23, 32, 56, 255};
 
-    // draw gradient line by line
+    const f32 r = (f32)height / maxHeight;
+    const Color bg = {
+        (u8)lerp(init.r, final.r, r),
+        (u8)lerp(init.g, final.g, r),
+        (u8)lerp(init.b, final.b, r),
+        (u8)lerp(init.a, final.a, r),
+    };
 
-    for (i32 i = 0; i < 480; i++) {
-        f32 part = i + height;
-        if (i + height > maxHeight) {
-            part = maxHeight;
-        }
-
-        f32 ratio = part / maxHeight;
-        Color c = {
-            (u8)(init.r * ratio + final.r * (1 - ratio)),
-            (u8)(init.g * ratio + final.g * (1 - ratio)),
-            (u8)(init.b * ratio + final.b * (1 - ratio)),
-            255,
-        };
-        DrawLine(0, i, state.screenWidth, i, c);
-    }
+    DrawRectangle(0, 0, state.screenWidth, state.screenHeight, bg);
 }
 
 void cameraFollow(position_c* playerPos) {

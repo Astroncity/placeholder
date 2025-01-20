@@ -131,5 +131,62 @@
     "directory": "/home/astro/projects/placeholder",
     "file": "/home/astro/projects/placeholder/src/utils/window.c",
     "output": "/home/astro/projects/placeholder/build/utils/window.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/utils/mathEx.o",
+      "src/utils/mathEx.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/utils/mathEx.c",
+    "output": "/home/astro/projects/placeholder/build/utils/mathEx.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/prefabs/player.o",
+      "src/prefabs/player.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/prefabs/player.c",
+    "output": "/home/astro/projects/placeholder/build/prefabs/player.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/prefabs/platform.o",
+      "src/prefabs/platform.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/prefabs/platform.c",
+    "output": "/home/astro/projects/placeholder/build/prefabs/platform.o"
   }
 ]
