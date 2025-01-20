@@ -1,21 +1,16 @@
+#include "engine.h"
 #include "mathEx.h"
-#include "physics.h"
 #include "platform.h"
 #include "player.h"
-#include "render.h"
-#include "state.h"
-#include "transform.h"
-#include "uiFramework.h"
-#include "window.h"
 #include <raylib.h>
 #include <stdio.h>
 
-void renderGen(ecs_entity_t e) {
+void render_general(ecs_entity_t e) {
     const position_c* p = ecs_get(state.world, e, position_c);
     DrawRectangle(p->x, p->y, state.screenWidth, 256, GRUV_GREEN);
 }
 
-void drawBackground(i32 h) {
+void draw_background(i32 h) {
     // TODO: use a shader for this
 
     // WARNING: temp value
@@ -36,7 +31,7 @@ void drawBackground(i32 h) {
     DrawRectangle(0, 0, state.screenWidth, state.screenHeight, bg);
 }
 
-void cameraFollow(position_c* playerPos) {
+void camera_follow(position_c* playerPos) {
     f32 curr_tar = state.camera.target.y;
     f32 tar = playerPos->y - state.screenHeight / 2;
     f32 t = GetFrameTime() * 3;
@@ -45,16 +40,10 @@ void cameraFollow(position_c* playerPos) {
 }
 
 int main(void) {
-    initState(270, 480);
-    setWindowFlags();
+    engine_init();
     RenderTexture2D target =
         LoadRenderTexture(state.screenWidth, state.screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
-
-    ECS_IMPORT(state.world, TransformModule);
-    ECS_IMPORT(state.world, RendererModule);
-    ECS_IMPORT(state.world, UIModule);
-    ECS_IMPORT(state.world, Physics);
 
     ecs_entity_t player = PlayerNew();
     position_c* playerPos = ecs_get_mut(state.world, player, position_c);
@@ -63,16 +52,16 @@ int main(void) {
     ecs_entity_t floor = ecs_entity(state.world, {.name = "floor"});
     ecs_set(state.world, floor, position_c, {0, state.screenHeight - 32});
     ecs_set(state.world, floor, Collider, {state.screenWidth, 32, NULL});
-    ecs_set(state.world, floor, Renderable, {0, renderGen});
+    ecs_set(state.world, floor, Renderable, {0, render_general});
 
     while (!WindowShouldClose()) {
-        f32 scale = getWindowScale();
-        updateScreenMousePos(scale);
+        f32 scale = get_window_scale();
+        update_mouse(scale);
 
         BeginTextureMode(target);
         ClearBackground(BLACK);
-        drawBackground(abs((i32)playerPos->y - 240));
-        cameraFollow(playerPos);
+        draw_background(abs((i32)playerPos->y - 240));
+        camera_follow(playerPos);
 
         BeginMode2D(state.camera);
 
@@ -82,7 +71,7 @@ int main(void) {
         EndTextureMode();
         BeginDrawing();
         ClearBackground(BLACK);
-        drawScaledWindow(target, scale);
+        draw_window(target, scale);
         EndDrawing();
     }
 

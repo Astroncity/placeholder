@@ -12,8 +12,7 @@ void render(ecs_iter_t* it) {
     }
 }
 
-int compareRenderable(ecs_entity_t e1, const void* ptr1, ecs_entity_t e2,
-                      const void* ptr2) {
+int compare(ecs_entity_t e1, const void* ptr1, ecs_entity_t e2, const void* ptr2) {
     (void)e1;
     (void)e2;
     const Renderable* r1 = ptr1;
@@ -37,6 +36,6 @@ void RendererModuleImport(ecs_world_t* world) {
              },
          .callback = render,
          .query.order_by = ecs_id(Renderable),
-         .query.order_by_callback = compareRenderable});
+         .query.order_by_callback = compare});
     (void)render_s;
 }

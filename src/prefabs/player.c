@@ -22,7 +22,7 @@ void resolve_player_collision(ecs_entity_t self, ecs_entity_t other) {
     (void)other;
 }
 
-void renderPlayer(ecs_entity_t e) {
+void render_player(ecs_entity_t e) {
     const position_c* p = ecs_get(state.world, e, position_c);
     DrawRectangle(p->x, p->y, 24, 16, GRUV_AQUA);
 }
@@ -33,7 +33,7 @@ ecs_entity_t PlayerNew(void) {
     ecs_set(state.world, player, velocity_c, {0, 0});
     ecs_set(state.world, player, PlayerController, {false});
     ecs_add(state.world, player, _physicsObj);
-    ecs_set(state.world, player, Renderable, {1, renderPlayer});
+    ecs_set(state.world, player, Renderable, {1, render_player});
     ecs_set(state.world, player, Collider, {24, 16, resolve_player_collision});
     return player;
 }

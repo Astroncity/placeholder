@@ -12,18 +12,18 @@ bool ready = false;
 const i32 width = 64;
 const i32 height = 16;
 
-void renderTile(ecs_entity_t e) {
+void render_tile(ecs_entity_t e) {
     const position_c* p = ecs_get(state.world, e, position_c);
     DrawTexture(sprite, p->x, p->y, WHITE);
 }
 
-void initPlatform() {
+void init_platform() {
     // TODO: Ensure dependent modules are loaded
 
     prefab =
         ecs_entity(state.world, {.name = "Platform", .add = ecs_ids(EcsPrefab)});
 
-    ecs_set(state.world, prefab, Renderable, {0, renderTile});
+    ecs_set(state.world, prefab, Renderable, {0, render_tile});
     ecs_set(state.world, prefab, Collider, {width, height, NULL});
     sprite =
         LoadTexture("/home/astro/projects/placeholder/assets/images/platform.png");
@@ -32,7 +32,7 @@ void initPlatform() {
 
 void PlatformNew(i32 x, i32 y) {
     if (!ready) {
-        initPlatform();
+        init_platform();
     }
 
     ecs_entity_t e = ecs_new_w_pair(state.world, EcsIsA, prefab);

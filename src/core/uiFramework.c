@@ -14,7 +14,7 @@ typedef struct {
 } textbox_c;
 ECS_COMPONENT_DECLARE(textbox_c);
 
-void renderLabel(ecs_entity_t e) {
+void render_label(ecs_entity_t e) {
     const label_c* l = ecs_get(state.world, e, label_c);
     const position_c* pos = ecs_get(state.world, e, position_c);
     i32 iconOffset = 0;
@@ -31,7 +31,7 @@ void renderLabel(ecs_entity_t e) {
                (v2){pos->x + l->offset.x + iconOffset, pos->y + l->offset.y - yoff},
                l->fontSize, 1, WHITE);
 }
-void renderTextbox(ecs_entity_t e) {
+void render_textbox(ecs_entity_t e) {
     const position_c* pos = ecs_get(state.world, e, position_c);
     const textbox_c* box = ecs_get(state.world, e, textbox_c);
 
@@ -40,10 +40,10 @@ void renderTextbox(ecs_entity_t e) {
     DrawRectangleRounded((Rect){pos->x, pos->y, width, 20 * box->size}, 0.3, 2,
                          GRUV_DARK2);
 }
-textbox_e createTextbox(const char* title, v2 pos) {
+textbox_e create_textbox(const char* title, v2 pos) {
     textbox_e e = ecs_new(state.world);
     ecs_set(state.world, e, position_c, {pos.x, pos.y});
-    ecs_set(state.world, e, Renderable, {5, renderTextbox});
+    ecs_set(state.world, e, Renderable, {5, render_textbox});
     ecs_set(state.world, e, textbox_c, {.size = 0, .maxLen = 0, .minLen = 100});
 
     TextboxPush(e, title, 20, (Texture2D){});
@@ -73,7 +73,7 @@ ecs_entity_t TextboxPush(textbox_e e, const char* text, f32 fontSize,
              .fontSize = fontSize});
     ecs_set(state.world, label, position_c,
             {boxPos->x, boxPos->y + (pady * 2 * box->size)});
-    ecs_set(state.world, label, Renderable, {priority, renderLabel});
+    ecs_set(state.world, label, Renderable, {priority, render_label});
     ++box->size;
 
     return label;

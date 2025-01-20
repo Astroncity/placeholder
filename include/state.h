@@ -13,4 +13,4 @@ typedef struct State {
 
 extern State state;
 
-void initState(u32 screenWidth, u32 screenHeight);
+void init_state(u32 screenWidth, u32 screenHeight);
