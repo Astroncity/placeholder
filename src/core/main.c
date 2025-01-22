@@ -1,7 +1,9 @@
+#include "dfly.h"
 #include "engine.h"
 #include "mathEx.h"
 #include "platform.h"
 #include "player.h"
+#include "uiFramework.h"
 #include <raylib.h>
 #include <stdio.h>
 
@@ -41,6 +43,7 @@ void camera_follow(position_c* playerPos) {
 
 int main(void) {
     engine_init();
+    ECS_IMPORT(state.world, UIModule);
     RenderTexture2D target =
         LoadRenderTexture(state.screenWidth, state.screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
@@ -48,11 +51,15 @@ int main(void) {
     ecs_entity_t player = PlayerNew();
     position_c* playerPos = ecs_get_mut(state.world, player, position_c);
     PlatformRandom(50);
+    DragonflyNew(100, 50);
 
     ecs_entity_t floor = ecs_entity(state.world, {.name = "floor"});
     ecs_set(state.world, floor, position_c, {0, state.screenHeight - 32});
     ecs_set(state.world, floor, Collider, {state.screenWidth, 32, NULL});
     ecs_set(state.world, floor, Renderable, {0, render_general});
+
+    textbox_e dash = create_textbox("", (Vector2){0, 300});
+    TextboxPush(dash, "test", 20, (Texture2D){});
 
     while (!WindowShouldClose()) {
         f32 scale = get_window_scale();
@@ -62,8 +69,6 @@ int main(void) {
         ClearBackground(BLACK);
         draw_background(abs((i32)playerPos->y - 240));
         camera_follow(playerPos);
-
-        BeginMode2D(state.camera);
 
         ecs_progress(state.world, GetFrameTime());
 

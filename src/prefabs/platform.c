@@ -1,13 +1,9 @@
 #include "platform.h"
-#include "flecs.h"
-#include "physics.h"
-#include "render.h"
-#include "state.h"
-#include "transform.h"
+#include "engine.h"
 
-ecs_entity_t prefab;
-Texture2D sprite;
-bool ready = false;
+static ecs_entity_t prefab;
+static Texture2D sprite;
+static bool ready = false;
 
 const i32 width = 64;
 const i32 height = 16;
@@ -17,16 +13,14 @@ void render_tile(ecs_entity_t e) {
     DrawTexture(sprite, p->x, p->y, WHITE);
 }
 
-void init_platform() {
+void init_platform(void) {
     // TODO: Ensure dependent modules are loaded
 
-    prefab =
-        ecs_entity(state.world, {.name = "Platform", .add = ecs_ids(EcsPrefab)});
+    prefab = DECLARE_PREFAB("Platform");
 
     ecs_set(state.world, prefab, Renderable, {0, render_tile});
     ecs_set(state.world, prefab, Collider, {width, height, NULL});
-    sprite =
-        LoadTexture("/home/astro/projects/placeholder/assets/images/platform.png");
+    sprite = LoadTexture("assets/images/platform.png");
     ready = true;
 }
 

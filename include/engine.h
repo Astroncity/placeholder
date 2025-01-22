@@ -5,4 +5,7 @@
 #include "transform.h"
 #include "window.h"
 
+#define DECLARE_PREFAB(nameStr)                                                     \
+    ecs_entity(state.world, {.name = #nameStr, .add = ecs_ids(EcsPrefab)});
+
 void engine_init(void);

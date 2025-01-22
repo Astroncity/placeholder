@@ -5,6 +5,8 @@
 #include "state.h"
 #include "transform.h"
 
+#define RENDER_PRIORITY 100
+
 ECS_COMPONENT_DECLARE(label_c);
 
 typedef struct {
@@ -19,7 +21,7 @@ void render_label(ecs_entity_t e) {
     const position_c* pos = ecs_get(state.world, e, position_c);
     i32 iconOffset = 0;
 
-    if ((l->icon.width != 0)) {
+    if (IsTextureValid(l->icon)) {
         DrawTexture(l->icon, pos->x + l->offset.x,
                     pos->y + l->offset.y - l->icon.height / 2.0, WHITE);
         iconOffset = l->icon.width * 1.2f;
@@ -43,7 +45,7 @@ void render_textbox(ecs_entity_t e) {
 textbox_e create_textbox(const char* title, v2 pos) {
     textbox_e e = ecs_new(state.world);
     ecs_set(state.world, e, position_c, {pos.x, pos.y});
-    ecs_set(state.world, e, Renderable, {5, render_textbox});
+    ecs_set(state.world, e, RenderableStatic, {RENDER_PRIORITY, render_textbox});
     ecs_set(state.world, e, textbox_c, {.size = 0, .maxLen = 0, .minLen = 100});
 
     TextboxPush(e, title, 20, (Texture2D){});
@@ -54,7 +56,7 @@ textbox_e create_textbox(const char* title, v2 pos) {
 ecs_entity_t TextboxPush(textbox_e e, const char* text, f32 fontSize,
                          Texture2D icon) {
     const position_c* boxPos = ecs_get(state.world, e, position_c);
-    u32 priority = ecs_get(state.world, e, Renderable)->renderLayer + 1;
+    u32 priority = ecs_get(state.world, e, RenderableStatic)->renderLayer + 1;
     textbox_c* box = ecs_get_mut(state.world, e, textbox_c);
 
     const v2 measure = MeasureTextEx(state.globalFont, text, fontSize, 1);
@@ -73,7 +75,7 @@ ecs_entity_t TextboxPush(textbox_e e, const char* text, f32 fontSize,
              .fontSize = fontSize});
     ecs_set(state.world, label, position_c,
             {boxPos->x, boxPos->y + (pady * 2 * box->size)});
-    ecs_set(state.world, label, Renderable, {priority, render_label});
+    ecs_set(state.world, label, RenderableStatic, {priority, render_label});
     ++box->size;
 
     return label;
