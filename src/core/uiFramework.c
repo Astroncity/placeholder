@@ -6,6 +6,7 @@
 #include "transform.h"
 
 #define RENDER_PRIORITY 100
+#define UI_MAIN_COLOR GRUV_GREEN
 
 ECS_COMPONENT_DECLARE(label_c);
 
@@ -40,7 +41,7 @@ void render_textbox(ecs_entity_t e) {
     const f32 width = MAX(box->maxLen, box->minLen);
 
     DrawRectangleRounded((Rect){pos->x, pos->y, width, 20 * box->size}, 0.3, 2,
-                         GRUV_DARK2);
+                         UI_MAIN_COLOR);
 }
 textbox_e create_textbox(const char* title, v2 pos) {
     textbox_e e = ecs_new(state.world);
@@ -65,7 +66,6 @@ ecs_entity_t TextboxPush(textbox_e e, const char* text, f32 fontSize,
     i32 pady = measure.y / 1.7;
 
     box->maxLen = MAX(box->maxLen, measure.x + padx + icon.width * (2.5f) + 10);
-    printf("New maxLen: %d\n", box->maxLen);
 
     ecs_entity_t label = ecs_entity(state.world, {.parent = e});
     ecs_set(state.world, label, label_c,

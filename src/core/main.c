@@ -1,4 +1,4 @@
-#include "dfly.h"
+#include "dragonfly.h"
 #include "engine.h"
 #include "mathEx.h"
 #include "platform.h"
@@ -51,7 +51,7 @@ int main(void) {
     ecs_entity_t player = PlayerNew();
     position_c* playerPos = ecs_get_mut(state.world, player, position_c);
     PlatformRandom(50);
-    DragonflyNew(100, 50);
+    DragonflyNew(100, 20);
 
     ecs_entity_t floor = ecs_entity(state.world, {.name = "floor"});
     ecs_set(state.world, floor, position_c, {0, state.screenHeight - 32});
@@ -68,6 +68,7 @@ int main(void) {
         BeginTextureMode(target);
         ClearBackground(BLACK);
         draw_background(abs((i32)playerPos->y - 240));
+        DrawFPS(0, 0);
         camera_follow(playerPos);
 
         ecs_progress(state.world, GetFrameTime());
