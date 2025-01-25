@@ -34,13 +34,14 @@ void PlatformNew(i32 x, i32 y) {
 }
 
 void PlatformRandom(u32 n) {
-    const i32 offset = height * 3.5;
+    i32 offset = (height * -2.5) + 450;
     const i32 leftBound = width;
     const i32 rightBound = state.screenWidth - width;
 
     for (u32 i = 0; i < n; i++) {
         i32 x = GetRandomValue(leftBound, rightBound);
-        i32 y = i * -offset + 480;
+        i32 y = offset;
+        offset -= height * 2.2 + GetRandomValue(0, 50);
         PlatformNew(x, y);
     }
 }
