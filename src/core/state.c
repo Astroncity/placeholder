@@ -10,4 +10,5 @@ void init_state(u32 screenWidth, u32 screenHeight) {
     state.screenHeight = screenHeight;
     state.camera = (Camera2D){0};
     state.camera.zoom = 1.0f;
+    state.playerData = (PlayerData){.lives = 3, .score = 0};
 }

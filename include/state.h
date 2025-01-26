@@ -2,6 +2,11 @@
 #include "defs.h"
 #include "flecs.h"
 
+typedef struct PlayerData {
+    u32 lives;
+    u32 score;
+} PlayerData;
+
 typedef struct State {
     ecs_world_t* world;
     Camera2D camera;
@@ -9,6 +14,7 @@ typedef struct State {
     v2* mouse;
     u32 screenWidth;
     u32 screenHeight;
+    PlayerData playerData;
 } State;
 
 extern State state;

@@ -28,7 +28,7 @@ void Controller(ecs_iter_t* it) {
         v[i].x = 0;
         f32 delta = 1;
 
-        if (!cn[i].on_ground) {
+        if (!cn[i].on_ground && !cn[i].grappling) {
             v[i].y += 9.8 * 40 * GetFrameTime();
         }
 

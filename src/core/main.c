@@ -7,6 +7,8 @@
 #include <raylib.h>
 #include <stdio.h>
 
+Texture2D bottomPanel;
+
 void render_general(ecs_entity_t e) {
     const position_c* p = ecs_get(state.world, e, position_c);
     DrawRectangle(p->x, p->y, state.screenWidth, 256, GRUV_GREEN);
@@ -41,6 +43,8 @@ void camera_follow(position_c* playerPos) {
     state.camera.target = (Vector2){0, lerp(curr_tar, tar, t)};
 }
 
+void draw_ui() {}
+
 int main(void) {
     engine_init();
     ECS_IMPORT(state.world, UIModule);
@@ -58,12 +62,16 @@ int main(void) {
     ecs_set(state.world, floor, Collider, {state.screenWidth, 32, NULL});
     ecs_set(state.world, floor, Renderable, {0, render_general});
 
-    textbox_e dash = create_textbox("", (Vector2){0, 300});
-    TextboxPush(dash, "test", 20, (Texture2D){});
-
     while (!WindowShouldClose()) {
         f32 scale = get_window_scale();
         update_mouse(scale);
+
+        if (IsKeyPressed(KEY_F1)) {
+            printf("==== Mouse Debug ====\n");
+            printf("    Mouse (Screen): (%f, %f)\n", state.mouse->x, state.mouse->y);
+            v2 real_mouse = GetScreenToWorld2D(*state.mouse, state.camera);
+            printf("    Mouse (World): (%f, %f)\n", real_mouse.x, real_mouse.y);
+        }
 
         BeginTextureMode(target);
         ClearBackground(BLACK);

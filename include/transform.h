@@ -9,6 +9,7 @@ typedef struct {
 
 typedef struct {
     bool on_ground;
+    bool grappling;
 } PlayerController;
 
 extern ECS_COMPONENT_DECLARE(velocity_c);
