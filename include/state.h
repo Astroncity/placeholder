@@ -5,6 +5,8 @@
 typedef struct PlayerData {
     u32 lives;
     u32 score;
+    f32 grapple_cooldown_max;
+    f32 grapple_cooldown;
 } PlayerData;
 
 typedef struct State {

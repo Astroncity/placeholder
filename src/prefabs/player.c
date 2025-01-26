@@ -9,7 +9,7 @@
 #include <math.h>
 
 #define GRAPPLE_RADIUS 50
-#define LOCK_RADIUS 10
+#define LOCK_RADIUS 32
 
 bool ready = false;
 v2 grapple_point = {0, 0};
@@ -42,13 +42,13 @@ void on_grapple_finish() {
 
 void pre_grapple() {
     v2 m = GetScreenToWorld2D(*state.mouse, state.camera);
-    *mouse_collider_pos = m;
+    *mouse_collider_pos = (v2){m.x - LOCK_RADIUS / 2, m.y - LOCK_RADIUS / 2};
 
-    if (mouse_obj_over == 0) {
+    if (mouse_obj_over == 0 || !ecs_is_valid(state.world, mouse_obj_over)) {
         return;
     }
 
-    DrawRectangle(m.x, m.y, 10, 10, BLUE);
+    DrawRectangleV(*mouse_collider_pos, (v2){LOCK_RADIUS, LOCK_RADIUS}, BLUE);
 
     const Position* p = ecs_get(state.world, mouse_obj_over, Position);
     v2 real_pos = {p->x + 12, p->y + 8};
@@ -58,9 +58,9 @@ void pre_grapple() {
 
         grapple_point = real_pos;
         player_cn->grappling = true;
+    } else {
+        mouse_obj_over = 0;
     }
-
-    mouse_obj_over = 0;
 }
 
 void during_grapple() {
