@@ -1,4 +1,5 @@
 #include "dragonfly.h"
+#include "enemy.h"
 #include "engine.h"
 #include <math.h>
 
@@ -52,7 +53,21 @@ void init_dragonfly(void) {
 
     ecs_set(state.world, prefab, Renderable, {0, render});
     ecs_set(state.world, prefab, Collider, {24, 16, NULL});
+    ecs_add(state.world, prefab, enemy);
     ready = true;
+}
+
+void DragonFlyRandom(usize n) {
+    i32 left_bound = sprite.width;
+    i32 right_bound = state.screenWidth - sprite.width;
+    i32 offset = (sprite.height * -2.5) + 450;
+
+    for (usize i = 0; i < n; i++) {
+        i32 x = GetRandomValue(left_bound, right_bound);
+        i32 y = offset;
+        offset -= sprite.height * 2.2 + GetRandomValue(0, 50);
+        DragonflyNew(x, y);
+    }
 }
 
 ecs_entity_t DragonflyNew(i32 x, i32 y) {

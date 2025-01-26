@@ -1,4 +1,4 @@
-#include "dragonfly.h"
+#include "enemy.h"
 #include "engine.h"
 #include "mathEx.h"
 #include "platform.h"
@@ -47,6 +47,7 @@ void draw_ui() {}
 
 int main(void) {
     engine_init();
+    enemies_init();
     ECS_IMPORT(state.world, UIModule);
     RenderTexture2D target =
         LoadRenderTexture(state.screenWidth, state.screenHeight);
@@ -55,6 +56,7 @@ int main(void) {
     ecs_entity_t player = PlayerNew();
     position_c* playerPos = ecs_get_mut(state.world, player, position_c);
     PlatformRandom(50);
+    DragonFlyRandom(50);
     DragonflyNew(100, 20);
 
     ecs_entity_t floor = ecs_entity(state.world, {.name = "floor"});

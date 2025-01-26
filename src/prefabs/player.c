@@ -1,4 +1,5 @@
 #include "player.h"
+#include "enemy.h"
 #include "flecs.h"
 #include "mathEx.h"
 #include "physics.h"
@@ -8,6 +9,7 @@
 #include <math.h>
 
 #define GRAPPLE_RADIUS 50
+#define LOCK_RADIUS 10
 
 bool ready = false;
 v2 grapple_point = {0, 0};
@@ -15,10 +17,87 @@ position_c* player_pos;
 velocity_c* player_vel;
 PlayerController* player_cn;
 
-void handle_grapple(); // NOTE: For system definition
+position_c* mouse_collider_pos;
+ecs_entity_t mouse_obj_over = 0;
+
+const f32 base_grapple_speed = 200;
+f32 grapple_speed = base_grapple_speed;
+
+void handle_mouse_collision(ecs_entity_t self, ecs_entity_t other) {
+    (void)self;
+
+    if (ecs_has(state.world, other, enemy)) {
+        mouse_obj_over = other;
+    }
+}
+
+void on_grapple_finish() {
+    player_cn->grappling = false;
+    grapple_point = (v2){0, 0};
+    grapple_speed = base_grapple_speed;
+
+    player_vel->x /= 2;
+    player_vel->y /= 2;
+}
+
+void pre_grapple() {
+
+    v2 m = GetScreenToWorld2D(*state.mouse, state.camera);
+    mouse_collider_pos->x = m.x;
+    mouse_collider_pos->y = m.y;
+
+    if (mouse_obj_over == 0) {
+        return;
+    }
+
+    DrawRectangle(m.x, m.y, 10, 10, BLUE);
+
+    const position_c* p = ecs_get(state.world, mouse_obj_over, position_c);
+    DrawCircle(p->x, p->y, 10, RED);
+    printf("Mouse over enemy at (%f, %f)\n", p->x, p->y);
+
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !player_cn->grappling) {
+
+        grapple_point = (v2){p->x, p->y};
+        player_cn->grappling = true;
+    }
+
+    mouse_obj_over = 0;
+}
+
+void during_grapple() {
+    f32 angle = atan2f(grapple_point.y - player_pos->y - 8,
+                       grapple_point.x - player_pos->x - 12);
+
+    player_vel->x = cosf(angle) * grapple_speed * GetFrameTime() * 60;
+    player_vel->y = sinf(angle) * grapple_speed * GetFrameTime() * 60;
+
+    f32 dist = v2Dist((v2){player_pos->x + 12, player_pos->y + 8}, grapple_point);
+
+    if (dist < 5 || grapple_speed >= 1000) {
+        on_grapple_finish();
+    }
+
+    grapple_speed *= 1.05;
+}
+
+void handle_grapple() {
+    if (player_cn->grappling) {
+        during_grapple();
+    } else {
+        pre_grapple();
+    }
+}
 
 void init_player(void) {
-    ECS_SYSTEM(state.world, handle_grapple, EcsOnUpdate);
+    ECS_SYSTEM(state.world, handle_grapple, OnCamera);
+
+    ecs_entity_t mc = ecs_entity(state.world, {.name = "mouse_collider"});
+    ecs_set(state.world, mc, position_c, {0, 0});
+    ecs_set(state.world, mc, Collider,
+            {LOCK_RADIUS, LOCK_RADIUS, handle_mouse_collision});
+    mouse_collider_pos = ecs_get_mut(state.world, mc, position_c);
+
     ready = true;
 }
 
@@ -37,41 +116,6 @@ void resolve_player_collision(ecs_entity_t self, ecs_entity_t other) {
 
     v->y = 0;
     (void)other;
-}
-
-void on_grapple_finish() {
-    player_cn->grappling = false;
-    grapple_point = (v2){0, 0};
-}
-
-void pre_grapple() {
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !player_cn->grappling) {
-        grapple_point = GetScreenToWorld2D(*state.mouse, state.camera);
-        player_cn->grappling = true;
-    }
-}
-
-void during_grapple() {
-    printf("Grappling to %f, %f\n", grapple_point.x, grapple_point.y);
-    static const f32 grapple_speed = 5;
-    f32 angle = atan2f(grapple_point.y - player_pos->y - 8,
-                       grapple_point.x - player_pos->x - 12);
-
-    player_vel->x = cosf(angle) * grapple_speed * GetFrameTime() * 60;
-    player_vel->y = sinf(angle) * grapple_speed * GetFrameTime() * 60;
-
-    if (v2Dist((v2){player_pos->x + 12, player_pos->y + 8}, grapple_point) < 5) {
-        on_grapple_finish();
-    }
-    return;
-}
-
-void handle_grapple() {
-    if (player_cn->grappling) {
-        during_grapple();
-    } else {
-        pre_grapple();
-    }
 }
 
 void handle_debug(void) {
