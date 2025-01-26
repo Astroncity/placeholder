@@ -60,7 +60,7 @@ void init_dragonfly(void) {
 void DragonFlyRandom(usize n) {
     i32 left_bound = sprite.width;
     i32 right_bound = state.screenWidth - sprite.width;
-    i32 offset = (sprite.height * -2.5) + 450;
+    i32 offset = (sprite.height * -2.5) + 250;
 
     for (usize i = 0; i < n; i++) {
         i32 x = GetRandomValue(left_bound, right_bound);
