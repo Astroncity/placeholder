@@ -13,12 +13,12 @@ void ResolveCollisions(ecs_iter_t* it) {
     i32 n = ecs_query_count(it->query).entities;
     i32 proc = 0;
     const Collider* colBuf[n];
-    const position_c* posBuf[n];
+    const Position* posBuf[n];
     ecs_entity_t eBuf[n];
 
     while (ecs_query_next(it)) {
         const Collider* col = ecs_field(it, Collider, 0);
-        const position_c* pos = ecs_field(it, position_c, 1);
+        const Position* pos = ecs_field(it, Position, 1);
 
         for (int i = 0; i < it->count; i++) {
             posBuf[proc] = &pos[i];
@@ -54,15 +54,15 @@ void PhysicsImport(ecs_world_t* world) {
     ECS_TAG_DEFINE(world, _physicsObj);
     ECS_COMPONENT_DEFINE(world, Collider);
     ECS_SYSTEM_DEFINE(world, PhysicsUpdate, EcsPreUpdate,
-                      _physicsObj, [out] transform.module.velocity_c);
+                      _physicsObj, [out] transform.module.Velocity);
 
     ecs_entity_t cols = ecs_system(
         world,
         {.entity = ecs_entity(world,
                               {.name = "ResolveCollisions", // Name of the system
-                               .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+                               .add = ecs_ids(ecs_dependson(EcsPostUpdate))}),
          .query.terms = {{.id = ecs_id(Collider), .inout = EcsIn, .src.id = EcsThis},
-                         {.id = ecs_id(position_c),
+                         {.id = ecs_id(Position),
                           .inout = EcsIn,
                           .src.id = EcsThis}},
          .run = ResolveCollisions});

@@ -13,11 +13,11 @@
 
 bool ready = false;
 v2 grapple_point = {0, 0};
-position_c* player_pos;
-velocity_c* player_vel;
+Position* player_pos;
+Velocity* player_vel;
 PlayerController* player_cn;
 
-position_c* mouse_collider_pos;
+Position* mouse_collider_pos;
 ecs_entity_t mouse_obj_over = 0;
 
 const f32 base_grapple_speed = 200;
@@ -41,10 +41,8 @@ void on_grapple_finish() {
 }
 
 void pre_grapple() {
-
     v2 m = GetScreenToWorld2D(*state.mouse, state.camera);
-    mouse_collider_pos->x = m.x;
-    mouse_collider_pos->y = m.y;
+    *mouse_collider_pos = m;
 
     if (mouse_obj_over == 0) {
         return;
@@ -52,13 +50,13 @@ void pre_grapple() {
 
     DrawRectangle(m.x, m.y, 10, 10, BLUE);
 
-    const position_c* p = ecs_get(state.world, mouse_obj_over, position_c);
-    DrawCircle(p->x, p->y, 10, RED);
-    printf("Mouse over enemy at (%f, %f)\n", p->x, p->y);
+    const Position* p = ecs_get(state.world, mouse_obj_over, Position);
+    v2 real_pos = {p->x + 12, p->y + 8};
+    DrawCircleV(real_pos, 10, RED);
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !player_cn->grappling) {
 
-        grapple_point = (v2){p->x, p->y};
+        grapple_point = real_pos;
         player_cn->grappling = true;
     }
 
@@ -66,6 +64,9 @@ void pre_grapple() {
 }
 
 void during_grapple() {
+    const v2* obj_pos = ecs_get(state.world, mouse_obj_over, Position);
+    grapple_point = *obj_pos;
+
     f32 angle = atan2f(grapple_point.y - player_pos->y - 8,
                        grapple_point.x - player_pos->x - 12);
 
@@ -93,16 +94,16 @@ void init_player(void) {
     ECS_SYSTEM(state.world, handle_grapple, OnCamera);
 
     ecs_entity_t mc = ecs_entity(state.world, {.name = "mouse_collider"});
-    ecs_set(state.world, mc, position_c, {0, 0});
+    ecs_set(state.world, mc, Position, {0, 0});
     ecs_set(state.world, mc, Collider,
             {LOCK_RADIUS, LOCK_RADIUS, handle_mouse_collision});
-    mouse_collider_pos = ecs_get_mut(state.world, mc, position_c);
+    mouse_collider_pos = ecs_get_mut(state.world, mc, Position);
 
     ready = true;
 }
 
 void resolve_player_collision(ecs_entity_t self, ecs_entity_t other) {
-    velocity_c* v = ecs_get_mut(state.world, self, velocity_c);
+    Velocity* v = ecs_get_mut(state.world, self, Velocity);
 
     if (v->y <= 0) {
         return;
@@ -127,15 +128,15 @@ void handle_debug(void) {
 }
 
 void render_player(ecs_entity_t e) {
-    position_c* p = player_pos;
+    Position* p = player_pos;
     (void)e;
     DrawRectangle(p->x, p->y, 24, 16, GRUV_AQUA);
     DrawCircleLines(p->x + 12, p->y + 8, GRAPPLE_RADIUS, GRUV_AQUA);
 
     if (player_cn->grappling) {
 
-        DrawLineEx((v2){player_pos->x + 12, player_pos->y + 8},
-                   (v2){grapple_point.x, grapple_point.y}, 3, BLACK);
+        DrawLineEx((v2){player_pos->x + 12, player_pos->y + 8}, grapple_point, 3,
+                   BLACK);
     }
 
     handle_debug();
@@ -147,15 +148,15 @@ ecs_entity_t PlayerNew(void) {
     }
 
     ecs_entity_t player = ecs_entity(state.world, {.name = "player"});
-    ecs_set(state.world, player, position_c, {state.screenWidth / 2 - 16, 350});
-    ecs_set(state.world, player, velocity_c, {0, 0});
+    ecs_set(state.world, player, Position, {state.screenWidth / 2 - 16, 350});
+    ecs_set(state.world, player, Velocity, {0, 0});
     ecs_set(state.world, player, PlayerController, {false});
     ecs_add(state.world, player, _physicsObj);
     ecs_set(state.world, player, Renderable, {1, render_player});
     ecs_set(state.world, player, Collider, {24, 16, resolve_player_collision});
 
-    player_pos = ecs_get_mut(state.world, player, position_c);
-    player_vel = ecs_get_mut(state.world, player, velocity_c);
+    player_pos = ecs_get_mut(state.world, player, Position);
+    player_vel = ecs_get_mut(state.world, player, Velocity);
     player_cn = ecs_get_mut(state.world, player, PlayerController);
     return player;
 }

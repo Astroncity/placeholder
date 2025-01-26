@@ -9,7 +9,7 @@ const i32 width = 64;
 const i32 height = 16;
 
 void render_tile(ecs_entity_t e) {
-    const position_c* p = ecs_get(state.world, e, position_c);
+    const Position* p = ecs_get(state.world, e, Position);
     DrawTexture(sprite, p->x, p->y, WHITE);
 }
 
@@ -30,7 +30,7 @@ void PlatformNew(i32 x, i32 y) {
     }
 
     ecs_entity_t e = ecs_new_w_pair(state.world, EcsIsA, prefab);
-    ecs_set(state.world, e, position_c, {x, y});
+    ecs_set(state.world, e, Position, {x, y});
 }
 
 void PlatformRandom(u32 n) {

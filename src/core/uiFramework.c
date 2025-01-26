@@ -19,7 +19,7 @@ ECS_COMPONENT_DECLARE(textbox_c);
 
 void render_label(ecs_entity_t e) {
     const label_c* l = ecs_get(state.world, e, label_c);
-    const position_c* pos = ecs_get(state.world, e, position_c);
+    const Position* pos = ecs_get(state.world, e, Position);
     i32 iconOffset = 0;
 
     if (IsTextureValid(l->icon)) {
@@ -35,7 +35,7 @@ void render_label(ecs_entity_t e) {
                l->fontSize, 1, WHITE);
 }
 void render_textbox(ecs_entity_t e) {
-    const position_c* pos = ecs_get(state.world, e, position_c);
+    const Position* pos = ecs_get(state.world, e, Position);
     const textbox_c* box = ecs_get(state.world, e, textbox_c);
 
     const f32 width = MAX(box->maxLen, box->minLen);
@@ -45,7 +45,7 @@ void render_textbox(ecs_entity_t e) {
 }
 textbox_e create_textbox(const char* title, v2 pos) {
     textbox_e e = ecs_new(state.world);
-    ecs_set(state.world, e, position_c, {pos.x, pos.y});
+    ecs_set(state.world, e, Position, {pos.x, pos.y});
     ecs_set(state.world, e, RenderableStatic, {RENDER_PRIORITY, render_textbox});
     ecs_set(state.world, e, textbox_c, {.size = 0, .maxLen = 0, .minLen = 100});
 
@@ -56,7 +56,7 @@ textbox_e create_textbox(const char* title, v2 pos) {
 
 ecs_entity_t TextboxPush(textbox_e e, const char* text, f32 fontSize,
                          Texture2D icon) {
-    const position_c* boxPos = ecs_get(state.world, e, position_c);
+    const Position* boxPos = ecs_get(state.world, e, Position);
     u32 priority = ecs_get(state.world, e, RenderableStatic)->renderLayer + 1;
     textbox_c* box = ecs_get_mut(state.world, e, textbox_c);
 
@@ -73,7 +73,7 @@ ecs_entity_t TextboxPush(textbox_e e, const char* text, f32 fontSize,
              .offset = {padx, pady + 5},
              .icon = icon,
              .fontSize = fontSize});
-    ecs_set(state.world, label, position_c,
+    ecs_set(state.world, label, Position,
             {boxPos->x, boxPos->y + (pady * 2 * box->size)});
     ecs_set(state.world, label, RenderableStatic, {priority, render_label});
     ++box->size;

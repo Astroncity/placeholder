@@ -10,7 +10,7 @@
 Texture2D bottomPanel;
 
 void render_general(ecs_entity_t e) {
-    const position_c* p = ecs_get(state.world, e, position_c);
+    const Position* p = ecs_get(state.world, e, Position);
     DrawRectangle(p->x, p->y, state.screenWidth, 256, GRUV_GREEN);
 }
 
@@ -35,7 +35,7 @@ void draw_background(i32 h) {
     DrawRectangle(0, 0, state.screenWidth, state.screenHeight, bg);
 }
 
-void camera_follow(position_c* playerPos) {
+void camera_follow(Position* playerPos) {
     f32 curr_tar = state.camera.target.y;
     f32 tar = playerPos->y - state.screenHeight / 2;
     f32 t = GetFrameTime() * 3;
@@ -54,13 +54,15 @@ int main(void) {
     SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
 
     ecs_entity_t player = PlayerNew();
-    position_c* playerPos = ecs_get_mut(state.world, player, position_c);
+    Position* playerPos = ecs_get_mut(state.world, player, Position);
     PlatformRandom(50);
-    DragonFlyRandom(50);
-    DragonflyNew(100, 20);
+    DragonFlyRandom(150);
+    DragonflyNew(100, 30);
+    DragonflyNew(150, 50);
+    DragonflyNew(200, 80);
 
     ecs_entity_t floor = ecs_entity(state.world, {.name = "floor"});
-    ecs_set(state.world, floor, position_c, {0, state.screenHeight - 32});
+    ecs_set(state.world, floor, Position, {0, state.screenHeight - 32});
     ecs_set(state.world, floor, Collider, {state.screenWidth, 32, NULL});
     ecs_set(state.world, floor, Renderable, {0, render_general});
 
