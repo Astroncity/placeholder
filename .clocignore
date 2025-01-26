@@ -6,3 +6,5 @@ comp.sh
 stats.sh
 git/
 src/utils/planetNameScraper/scrap/
+.clang-format
+makefile

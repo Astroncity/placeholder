@@ -1,1 +1,1 @@
-cloc --exclude-ext=txt --exclude-list-file=.clocignore .
+cloc --exclude-ext=txt,json,yaml,yml --exclude-list-file=.clocignore .
