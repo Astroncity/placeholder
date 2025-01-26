@@ -7,7 +7,7 @@
 #include <raylib.h>
 #include <stdio.h>
 
-Texture2D bottomPanel;
+Texture2D grapple_cooldown;
 
 void render_general(ecs_entity_t e) {
     const Position* p = ecs_get(state.world, e, Position);
@@ -43,11 +43,32 @@ void camera_follow(Position* playerPos) {
     state.camera.target = (Vector2){0, lerp(curr_tar, tar, t)};
 }
 
-void draw_ui() {}
+void init_ui(void) {
+    grapple_cooldown = LoadTexture("assets/images/grapple_cooldown.png");
+    return;
+}
+
+void draw_ui() {
+    i32 h = 96;
+    Rect bottom = {0, state.screenHeight - h, state.screenWidth, h};
+    DrawRectangleRounded(bottom, 0.25, 10, WHITE);
+
+    // cooldown  NOTE: should be extracted
+
+    f32 r =
+        state.playerData.grapple_cooldown / state.playerData.grapple_cooldown_max;
+
+    f32 len = grapple_cooldown.width * r;
+
+    DrawTexture(grapple_cooldown, 100, state.screenHeight - h + 40, WHITE);
+    DrawRectangle(100, state.screenHeight - h + 40, len, 32,
+                  (Color){255, 255, 255, 128});
+}
 
 int main(void) {
     engine_init();
     enemies_init();
+    init_ui();
     ECS_IMPORT(state.world, UIModule);
     RenderTexture2D target =
         LoadRenderTexture(state.screenWidth, state.screenHeight);
@@ -65,6 +86,8 @@ int main(void) {
     ecs_set(state.world, floor, Position, {0, state.screenHeight - 32});
     ecs_set(state.world, floor, Collider, {state.screenWidth, 32, NULL});
     ecs_set(state.world, floor, Renderable, {0, render_general});
+
+    ECS_SYSTEM(state.world, draw_ui, PostCamera);
 
     while (!WindowShouldClose()) {
         f32 scale = get_window_scale();

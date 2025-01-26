@@ -44,6 +44,11 @@ void pre_grapple() {
     v2 m = GetScreenToWorld2D(*state.mouse, state.camera);
     *mouse_collider_pos = (v2){m.x - LOCK_RADIUS / 2, m.y - LOCK_RADIUS / 2};
 
+    state.playerData.grapple_cooldown -= GetFrameTime();
+    if (state.playerData.grapple_cooldown < 0) {
+        state.playerData.grapple_cooldown = 0;
+    }
+
     if (mouse_obj_over == 0 || !ecs_is_valid(state.world, mouse_obj_over)) {
         return;
     }
@@ -58,6 +63,7 @@ void pre_grapple() {
 
         grapple_point = real_pos;
         player_cn->grappling = true;
+        state.playerData.grapple_cooldown = state.playerData.grapple_cooldown_max;
     } else {
         mouse_obj_over = 0;
     }
