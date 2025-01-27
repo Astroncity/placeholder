@@ -4,9 +4,10 @@
 
 typedef struct PlayerData {
     u32 lives;
+    u32 lives_max;
     u32 score;
-    f32 grapple_cooldown_max;
-    f32 grapple_cooldown;
+    f32 grapp_cool_max;
+    f32 grapp_cool;
 } PlayerData;
 
 typedef struct State {
@@ -16,7 +17,7 @@ typedef struct State {
     v2* mouse;
     u32 screenWidth;
     u32 screenHeight;
-    PlayerData playerData;
+    PlayerData plr_dat;
     Texture2D cursor;
     Texture2D cursor_locked;
     bool draw_cursor;

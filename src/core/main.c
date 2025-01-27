@@ -3,11 +3,16 @@
 #include "mathEx.h"
 #include "platform.h"
 #include "player.h"
+#include "rollingCounter.h"
 #include "uiFramework.h"
 #include <raylib.h>
 #include <stdio.h>
 
 Texture2D grapple_cooldown;
+Texture2D heart_full;
+Texture2D heart_empty;
+Texture2D dashboard;
+ecs_entity_t score_counter;
 
 void render_general(ecs_entity_t e) {
     const Position* p = ecs_get(state.world, e, Position);
@@ -17,7 +22,7 @@ void render_general(ecs_entity_t e) {
 void draw_background(i32 h) {
     // TODO: use a shader for this
 
-    // WARNING: temp value
+    // WARNING: temp valuee
     const i32 maxHeight = 10000;
     const i32 height = abs(h);
 
@@ -45,24 +50,36 @@ void camera_follow(Position* playerPos) {
 
 void init_ui(void) {
     grapple_cooldown = LoadTexture("assets/images/grapple_cooldown.png");
-    return;
+    heart_full = LoadTexture("assets/images/heart_full.png");
+    heart_empty = LoadTexture("assets/images/heart_empty.png");
+    dashboard = LoadTexture("assets/images/dashboard.png");
+    score_counter = RollingCounterNew((v2){12, 396});
+}
+
+void draw_hearts() {
+    v2 init = {100, 450};
+
+    for (u32 i = 1; i <= state.plr_dat.lives_max; i++) {
+        if (i <= state.plr_dat.lives) {
+            DrawTexture(heart_full, init.x, init.y, WHITE);
+        } else {
+            DrawTexture(heart_empty, init.x, init.y, WHITE);
+        }
+
+        init.x += 32 + 8;
+    }
 }
 
 void draw_ui() {
-    i32 h = 96;
-    Rect bottom = {0, state.screenHeight - h, state.screenWidth, h};
-    DrawRectangleRounded(bottom, 0.25, 10, WHITE);
+    DrawTexture(dashboard, 0, state.screenHeight - 96, WHITE);
 
-    // cooldown  NOTE: should be extracted
-
-    f32 r =
-        state.playerData.grapple_cooldown / state.playerData.grapple_cooldown_max;
-
+    f32 r = state.plr_dat.grapp_cool / state.plr_dat.grapp_cool_max;
     f32 len = grapple_cooldown.width * r;
 
-    DrawTexture(grapple_cooldown, 100, state.screenHeight - h + 40, WHITE);
-    DrawRectangle(100, state.screenHeight - h + 40, len, 32,
+    DrawTexture(grapple_cooldown, 100, state.screenHeight - 56, WHITE);
+    DrawRectangle(100, state.screenHeight - 56, len, 32,
                   (Color){255, 255, 255, 128});
+    draw_hearts();
 }
 
 void draw_cursor(void) {
@@ -77,8 +94,8 @@ void draw_cursor(void) {
 int main(void) {
     engine_init();
     enemies_init();
-    init_ui();
     ECS_IMPORT(state.world, UIModule);
+    init_ui();
     RenderTexture2D target =
         LoadRenderTexture(state.screenWidth, state.screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
@@ -98,7 +115,8 @@ int main(void) {
     ecs_set(state.world, floor, Collider, {state.screenWidth, 32, NULL});
     ecs_set(state.world, floor, Renderable, {0, render_general});
 
-    ECS_SYSTEM(state.world, draw_ui, PostCamera);
+    ecs_entity_t ui_drawer = ecs_new(state.world);
+    ecs_set(state.world, ui_drawer, RenderableStatic, {0, draw_ui});
 
     while (!WindowShouldClose()) {
         f32 scale = get_window_scale();
@@ -109,6 +127,14 @@ int main(void) {
             printf("    Mouse (Screen): (%f, %f)\n", state.mouse->x, state.mouse->y);
             v2 real_mouse = GetScreenToWorld2D(*state.mouse, state.camera);
             printf("    Mouse (World): (%f, %f)\n", real_mouse.x, real_mouse.y);
+
+            RollingCounter* rc =
+                ecs_get_mut(state.world, score_counter, RollingCounter);
+            if (rc->value <= 990) {
+                rc->value = 990;
+            }
+            rc->value += 1;
+            printf("    Score: %d\n", rc->value);
         }
 
         BeginTextureMode(target);
