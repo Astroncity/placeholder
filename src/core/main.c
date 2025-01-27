@@ -65,6 +65,15 @@ void draw_ui() {
                   (Color){255, 255, 255, 128});
 }
 
+void draw_cursor(void) {
+    if (!state.draw_cursor) {
+        return;
+    }
+
+    v2 loc = {state.mouse->x - 16, state.mouse->y - 16};
+    DrawTextureV(state.cursor, loc, WHITE);
+}
+
 int main(void) {
     engine_init();
     enemies_init();
@@ -73,6 +82,8 @@ int main(void) {
     RenderTexture2D target =
         LoadRenderTexture(state.screenWidth, state.screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
+
+    HideCursor();
 
     ecs_entity_t player = PlayerNew();
     Position* playerPos = ecs_get_mut(state.world, player, Position);
@@ -103,6 +114,7 @@ int main(void) {
         BeginTextureMode(target);
         ClearBackground(BLACK);
         draw_background(abs((i32)playerPos->y - 240));
+        draw_cursor();
         DrawFPS(0, 0);
         camera_follow(playerPos);
 

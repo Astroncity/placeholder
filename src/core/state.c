@@ -14,4 +14,5 @@ void init_state(u32 screenWidth, u32 screenHeight) {
                                     .score = 0,
                                     .grapple_cooldown_max = 1.0f,
                                     .grapple_cooldown = 0.0f};
+    state.draw_cursor = true;
 }

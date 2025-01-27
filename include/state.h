@@ -17,6 +17,9 @@ typedef struct State {
     u32 screenWidth;
     u32 screenHeight;
     PlayerData playerData;
+    Texture2D cursor;
+    Texture2D cursor_locked;
+    bool draw_cursor;
 } State;
 
 extern State state;

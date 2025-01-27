@@ -12,7 +12,6 @@
 #define LOCK_RADIUS 32
 
 bool ready = false;
-v2 grapple_point = {0, 0};
 Position* player_pos;
 Velocity* player_vel;
 PlayerController* player_cn;
@@ -21,6 +20,8 @@ Position* mouse_collider_pos;
 ecs_entity_t mouse_obj_over = 0;
 
 const f32 base_grapple_speed = 200;
+v2 grapple_point = {0, 0};
+v2 locked_cursor = {0, 0};
 f32 grapple_speed = base_grapple_speed;
 
 void handle_mouse_collision(ecs_entity_t self, ecs_entity_t other) {
@@ -50,17 +51,18 @@ void pre_grapple() {
     }
 
     if (mouse_obj_over == 0 || !ecs_is_valid(state.world, mouse_obj_over)) {
+        locked_cursor = v2Lerp(locked_cursor, m, 0.2);
         return;
     }
 
-    DrawRectangleV(*mouse_collider_pos, (v2){LOCK_RADIUS, LOCK_RADIUS}, BLUE);
-
     const Position* p = ecs_get(state.world, mouse_obj_over, Position);
     v2 real_pos = {p->x + 12, p->y + 8};
-    DrawCircleV(real_pos, 10, RED);
+
+    locked_cursor = v2Lerp(locked_cursor, real_pos, 0.2);
+    DrawTexture(state.cursor_locked, locked_cursor.x - 16, locked_cursor.y - 16,
+                WHITE);
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !player_cn->grappling) {
-
         grapple_point = real_pos;
         player_cn->grappling = true;
         state.playerData.grapple_cooldown = state.playerData.grapple_cooldown_max;
