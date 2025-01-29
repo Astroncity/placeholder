@@ -24,7 +24,7 @@ static v2 grapple_point = {0, 0};
 static v2 locked_cursor = {0, 0};
 static f32 grapple_speed = base_grapple_speed;
 
-void handle_mouse_collision(ecs_entity_t self, ecs_entity_t other) {
+static void handle_mouse_collision(ecs_entity_t self, ecs_entity_t other) {
     (void)self;
 
     if (ecs_has(state.world, other, enemy)) {
@@ -32,7 +32,7 @@ void handle_mouse_collision(ecs_entity_t self, ecs_entity_t other) {
     }
 }
 
-void on_grapple_finish() {
+static void on_grapple_finish(void) {
     controller->grappling = false;
     grapple_point = (v2){0, 0};
     grapple_speed = base_grapple_speed;
@@ -41,7 +41,7 @@ void on_grapple_finish() {
     vel->y /= 2;
 }
 
-void pre_grapple() {
+static void pre_grapple(void) {
     v2 m = GetScreenToWorld2D(*state.mouse, state.camera);
     *mouse_collider_pos = (v2){m.x - LOCK_RADIUS / 2, m.y - LOCK_RADIUS / 2};
 
@@ -71,7 +71,7 @@ void pre_grapple() {
     }
 }
 
-void during_grapple() {
+static void during_grapple(void) {
     const v2* obj_pos = ecs_get(state.world, mouse_obj_over, Position);
     grapple_point = *obj_pos;
 
@@ -89,7 +89,7 @@ void during_grapple() {
     grapple_speed *= 1.05;
 }
 
-void handle_grapple() {
+static void handle_grapple() {
     if (controller->grappling) {
         during_grapple();
     } else {
@@ -97,8 +97,8 @@ void handle_grapple() {
     }
 }
 
-void init_player(void) {
-    ECS_SYSTEM(state.world, handle_grapple, OnCamera);
+static void init(void) {
+    ECS_SYSTEM(state.world, handle_grapple, OnCamera, 0);
 
     ecs_entity_t mc = ecs_entity(state.world, {.name = "mouse_collider"});
     ecs_set(state.world, mc, Position, {0, 0});
@@ -109,7 +109,7 @@ void init_player(void) {
     ready = true;
 }
 
-void resolve_player_collision(ecs_entity_t self, ecs_entity_t other) {
+static void onCollision(ecs_entity_t self, ecs_entity_t other) {
     Velocity* v = ecs_get_mut(state.world, self, Velocity);
 
     if (v->y <= 0) {
@@ -126,7 +126,7 @@ void resolve_player_collision(ecs_entity_t self, ecs_entity_t other) {
     (void)other;
 }
 
-void handle_debug(void) {
+static void print_debug(void) {
     if (IsKeyPressed(KEY_F1)) {
         printf("==== Player Debug ====\n");
         printf("    Pos: (%f, %f)\n", pos->x, pos->y);
@@ -134,7 +134,7 @@ void handle_debug(void) {
     }
 }
 
-void render_player(ecs_entity_t e) {
+static void render(ecs_entity_t e) {
     Position* p = pos;
     (void)e;
     DrawRectangle(p->x, p->y, 24, 16, GRUV_AQUA);
@@ -145,12 +145,12 @@ void render_player(ecs_entity_t e) {
         DrawLineEx((v2){pos->x + 12, pos->y + 8}, grapple_point, 3, BLACK);
     }
 
-    handle_debug();
+    print_debug();
 }
 
 ecs_entity_t PlayerNew(void) {
     if (!ready) {
-        init_player();
+        init();
     }
 
     ecs_entity_t player = ecs_entity(state.world, {.name = "player"});
@@ -158,8 +158,8 @@ ecs_entity_t PlayerNew(void) {
     ecs_set(state.world, player, Velocity, {0, 0});
     ecs_set(state.world, player, PlayerController, {false});
     ecs_add(state.world, player, _physicsObj);
-    ecs_set(state.world, player, Renderable, {1, render_player});
-    ecs_set(state.world, player, Collider, {24, 16, resolve_player_collision});
+    ecs_set(state.world, player, Renderable, {1, render});
+    ecs_set(state.world, player, Collider, {24, 16, onCollision});
 
     pos = ecs_get_mut(state.world, player, Position);
     vel = ecs_get_mut(state.world, player, Velocity);

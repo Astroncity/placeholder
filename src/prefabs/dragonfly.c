@@ -29,7 +29,7 @@ static void render(ecs_entity_t e) {
     DrawTexture(*s, p->x, p->y, WHITE);
 }
 
-void dragonfly_update(ecs_iter_t* it) {
+static void update(ecs_iter_t* it) {
     Position* p = ecs_field(it, Position, 0);
     Velocity* v = ecs_field(it, Velocity, 1);
     const dragonfly_c* d = ecs_field(it, dragonfly_c, 2);
@@ -44,14 +44,13 @@ void dragonfly_update(ecs_iter_t* it) {
     }
 }
 
-void init_dragonfly(void) {
+static void init(void) {
     sprite = LoadTexture("assets/images/dragonfly.png");
     spriteRev = LoadTexture("assets/images/dragonflyRev.png");
 
     prefab = DECLARE_PREFAB("Dragonfly");
     ECS_COMPONENT_DEFINE(state.world, dragonfly_c);
-    ECS_SYSTEM(state.world, dragonfly_update,
-               EcsOnUpdate, [out] transform.module.Position,
+    ECS_SYSTEM(state.world, update, EcsOnUpdate, [out] transform.module.Position,
                [out] transform.module.Velocity, [in] dragonfly_c);
 
     ecs_set(state.world, prefab, Renderable, {0, render});
@@ -75,7 +74,7 @@ void DragonFlyRandom(usize n) {
 
 ecs_entity_t DragonflyNew(i32 x, i32 y) {
     if (!ready) {
-        init_dragonfly();
+        init();
     }
 
     const f32 vel = GetRandomValue(300, 700) / 10.0;

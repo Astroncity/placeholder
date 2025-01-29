@@ -11,7 +11,7 @@ ECS_SYSTEM_DECLARE(endCamera);
 ecs_entity_t OnCamera;
 ecs_entity_t PostCamera;
 
-void render(ecs_iter_t* it) {
+static void render(ecs_iter_t* it) {
 
     const Renderable* s = ecs_field(it, Renderable, 0);
 
@@ -20,16 +20,8 @@ void render(ecs_iter_t* it) {
     }
 }
 
-void renderStatic(ecs_iter_t* it) {
-
-    const RenderableStatic* s = ecs_field(it, RenderableStatic, 0);
-
-    for (int i = 0; i < it->count; i++) {
-        s[i].render(it->entities[i]);
-    }
-}
-
-int compare(ecs_entity_t e1, const void* ptr1, ecs_entity_t e2, const void* ptr2) {
+static inline int compare(ecs_entity_t e1, const void* ptr1, ecs_entity_t e2,
+                          const void* ptr2) {
     (void)e1;
     (void)e2;
     const Renderable* r1 = ptr1;
@@ -38,12 +30,12 @@ int compare(ecs_entity_t e1, const void* ptr1, ecs_entity_t e2, const void* ptr2
     return r1->renderLayer - r2->renderLayer;
 }
 
-void startCamera(ecs_iter_t* it) {
+static void startCamera(ecs_iter_t* it) {
     (void)it;
     BeginMode2D(state.camera);
 }
 
-void endCamera(ecs_iter_t* it) {
+static void endCamera(ecs_iter_t* it) {
     (void)it;
     EndMode2D();
 }

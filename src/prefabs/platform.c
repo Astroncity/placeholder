@@ -5,20 +5,20 @@ static ecs_entity_t prefab;
 static Texture2D sprite;
 static bool ready = false;
 
-const i32 width = 64;
-const i32 height = 16;
+static const i32 width = 64;
+static const i32 height = 16;
 
-void render_tile(ecs_entity_t e) {
+static void render(ecs_entity_t e) {
     const Position* p = ecs_get(state.world, e, Position);
     DrawTexture(sprite, p->x, p->y, WHITE);
 }
 
-void init_platform(void) {
+static void init(void) {
     // TODO: Ensure dependent modules are loaded
 
     prefab = DECLARE_PREFAB("Platform");
 
-    ecs_set(state.world, prefab, Renderable, {0, render_tile});
+    ecs_set(state.world, prefab, Renderable, {0, render});
     ecs_set(state.world, prefab, Collider, {width, height, NULL});
     sprite = LoadTexture("assets/images/platform.png");
     ready = true;
@@ -26,7 +26,7 @@ void init_platform(void) {
 
 void PlatformNew(i32 x, i32 y) {
     if (!ready) {
-        init_platform();
+        init();
     }
 
     ecs_entity_t e = ecs_new_w_pair(state.world, EcsIsA, prefab);
