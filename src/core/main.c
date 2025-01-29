@@ -130,9 +130,6 @@ int main(void) {
 
             RollingCounter* rc =
                 ecs_get_mut(state.world, score_counter, RollingCounter);
-            if (rc->value <= 990) {
-                rc->value = 990;
-            }
             rc->value += 1;
             printf("    Score: %d\n", rc->value);
         }

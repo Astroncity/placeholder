@@ -40,7 +40,6 @@ static void render(ecs_entity_t self) {
     u16 digits[4];
     get_digits(v, digits);
 
-    // Reverse the digits
     for (u8 i = 0; i < 2; i++) {
         u16 temp = digits[i];
         digits[i] = digits[3 - i];
@@ -53,11 +52,6 @@ static void render(ecs_entity_t self) {
 
         if (abs(rc->digit_masks[i] - h_target) < 5) {
             rc->digit_masks[i] = h_target;
-        }
-
-        if (digits[i] == 0) {
-            printf("y and height and target: %d %d %d\n", rc->digit_masks[i],
-                   NUMBER_H, h_target);
         }
 
         u16 y = rc->digit_masks[i] - NUMBER_H;
