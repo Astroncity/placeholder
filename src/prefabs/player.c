@@ -121,7 +121,10 @@ static void onCollision(ecs_entity_t self, ecs_entity_t other) {
     if (ecs_has(state.world, other, _ground)) {
         cn->on_ground = true;
 
-        if (pos->y + 16 > fp->y) {
+        f32 dist = fp->y - pos->y;
+        f32 dist_alt = fp->y - (pos->y - vel->y); // buffer for fast moving player
+
+        if (dist >= 14 || dist_alt >= 14) {
             vel->y = 0;
         }
     }
