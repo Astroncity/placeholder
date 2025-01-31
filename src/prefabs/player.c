@@ -110,19 +110,22 @@ static void init(void) {
 }
 
 static void onCollision(ecs_entity_t self, ecs_entity_t other) {
-    Velocity* v = ecs_get_mut(state.world, self, Velocity);
+    const Position* fp = ecs_get(state.world, other, Position);
 
-    if (v->y <= 0) {
+    if (vel->y <= 0) {
         return;
     }
 
     PlayerController* cn = ecs_get_mut(state.world, self, PlayerController);
 
-    if (ecs_get_name(state.world, other), "floor") {
+    if (ecs_has(state.world, other, _ground)) {
         cn->on_ground = true;
+
+        if (pos->y + 16 > fp->y) {
+            vel->y = 0;
+        }
     }
 
-    v->y = 0;
     (void)other;
 }
 

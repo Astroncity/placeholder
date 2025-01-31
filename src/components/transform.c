@@ -8,6 +8,8 @@ ECS_COMPONENT_DECLARE(PlayerController);
 ECS_SYSTEM_DECLARE(Move);
 ECS_SYSTEM_DECLARE(Controller);
 
+ECS_TAG_DECLARE(_ground);
+
 void Move(ecs_iter_t* it) {
     Position* p = ecs_field(it, Position, 0);
     const Velocity* v = ecs_field(it, Velocity, 1);
@@ -59,4 +61,5 @@ void TransformModuleImport(ecs_world_t* world) {
     ECS_COMPONENT_DEFINE(world, PlayerController);
     ECS_SYSTEM_DEFINE(world, Move, EcsOnUpdate, Position, Velocity);
     ECS_SYSTEM_DEFINE(world, Controller, EcsOnUpdate, PlayerController, Velocity);
+    ECS_TAG_DEFINE(world, _ground);
 }

@@ -104,8 +104,8 @@ int main(void) {
 
     ecs_entity_t player = PlayerNew();
     Position* playerPos = ecs_get_mut(state.world, player, Position);
-    PlatformRandom(50);
-    DragonFlyRandom(150);
+    PlatformRandom(50 * 2);
+    DragonFlyRandom(150 * 2);
     DragonflyNew(100, 30);
     DragonflyNew(150, 50);
     DragonflyNew(200, 80);
@@ -114,8 +114,10 @@ int main(void) {
     ecs_set(state.world, floor, Position, {0, state.screenHeight - 32});
     ecs_set(state.world, floor, Collider, {state.screenWidth, 32, NULL});
     ecs_set(state.world, floor, Renderable, {0, render_general});
+    ecs_add(state.world, floor, _ground);
 
     ecs_entity_t ui_drawer = ecs_new(state.world);
+    ecs_set(state.world, ui_drawer, Position, {0, 0});
     ecs_set(state.world, ui_drawer, RenderableStatic, {0, draw_ui});
 
     while (!WindowShouldClose()) {

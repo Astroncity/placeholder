@@ -20,6 +20,7 @@ static void init(void) {
 
     ecs_set(state.world, prefab, Renderable, {0, render});
     ecs_set(state.world, prefab, Collider, {width, height, NULL});
+    ecs_add(state.world, prefab, _ground);
     sprite = LoadTexture("assets/images/platform.png");
     ready = true;
 }

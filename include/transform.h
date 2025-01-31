@@ -9,6 +9,7 @@ typedef struct {
     bool grappling;
 } PlayerController;
 
+extern ECS_TAG_DECLARE(_ground);
 extern ECS_COMPONENT_DECLARE(Velocity);
 extern ECS_COMPONENT_DECLARE(Position);
 extern ECS_COMPONENT_DECLARE(PlayerController);
