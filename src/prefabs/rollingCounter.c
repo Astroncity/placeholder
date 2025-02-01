@@ -56,8 +56,9 @@ static void render(ecs_entity_t self) {
 
         u16 y = rc->digit_masks[i] - NUMBER_H;
 
-        Rectangle src = {0, y, NUMBER_W, rc->digit_masks[i]};
-        Rectangle dst = {p->x + (i * NUMBER_W + i * 3), p->y, NUMBER_W, NUMBER_H};
+        Rectangle src = {0, y, NUMBER_W, NUMBER_H};
+        Rectangle dst = {p->x + i * (NUMBER_W + 3), p->y, NUMBER_W, NUMBER_H};
+
         DrawTextureRec(numbers, src, (v2){dst.x, dst.y}, WHITE);
     }
 }

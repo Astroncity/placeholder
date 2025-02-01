@@ -9,8 +9,8 @@
 #include <stdio.h>
 
 Texture2D grapple_cooldown;
-Texture2D heart_full;
-Texture2D heart_empty;
+Texture2D tube_full;
+Texture2D tube_empty;
 Texture2D dashboard;
 ecs_entity_t score_counter;
 
@@ -50,23 +50,24 @@ void camera_follow(Position* playerPos) {
 
 void init_ui(void) {
     grapple_cooldown = LoadTexture("assets/images/grapple_cooldown.png");
-    heart_full = LoadTexture("assets/images/heart_full.png");
-    heart_empty = LoadTexture("assets/images/heart_empty.png");
+    tube_full = LoadTexture("assets/images/tube_full.png");
+    tube_empty = LoadTexture("assets/images/heart_empty.png");
     dashboard = LoadTexture("assets/images/dashboard.png");
     score_counter = RollingCounterNew((v2){12, 396});
 }
 
+v2 init_def = {20, 420};
 void draw_hearts() {
-    v2 init = {100, 450};
+    v2 init = init_def;
 
     for (u32 i = 1; i <= state.plr_dat.lives_max; i++) {
         if (i <= state.plr_dat.lives) {
-            DrawTexture(heart_full, init.x, init.y, WHITE);
+            DrawTexture(tube_full, init.x, init.y, WHITE);
         } else {
-            DrawTexture(heart_empty, init.x, init.y, WHITE);
+            DrawTexture(tube_empty, init.x, init.y, WHITE);
         }
 
-        init.x += 32 + 8;
+        init.x += 16 + 8;
     }
 }
 

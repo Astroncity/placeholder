@@ -109,6 +109,17 @@ static void init(void) {
     ready = true;
 }
 
+static void handle_enemy_collision(ecs_entity_t self, ecs_entity_t other) {
+    (void)self;
+    if (ecs_has(state.world, other, enemy)) {
+        ecs_delete(state.world, other);
+
+        if (!controller->grappling) {
+            state.plr_dat.lives--;
+        }
+    }
+}
+
 static void onCollision(ecs_entity_t self, ecs_entity_t other) {
     const Position* fp = ecs_get(state.world, other, Position);
 
@@ -117,6 +128,10 @@ static void onCollision(ecs_entity_t self, ecs_entity_t other) {
     }
 
     PlayerController* cn = ecs_get_mut(state.world, self, PlayerController);
+
+    if (ecs_has(state.world, other, enemy)) {
+        handle_enemy_collision(self, other);
+    }
 
     if (ecs_has(state.world, other, _ground)) {
         cn->on_ground = true;
