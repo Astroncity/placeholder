@@ -10,6 +10,7 @@
 
 #define GRAPPLE_RADIUS 50
 #define LOCK_RADIUS 48
+#define MAX_GRAPPLE_SPEED 50
 
 static bool ready = false;
 static Position* pos;
@@ -19,16 +20,22 @@ static PlayerController* controller;
 static Position* mouse_collider_pos;
 static ecs_entity_t mouse_obj_over = 0;
 
-static const f32 base_grapple_speed = 200;
+static const f32 base_grapple_speed = 1;
 static v2 grapple_point = {0, 0};
 static v2 locked_cursor = {0, 0};
 static f32 grapple_speed = base_grapple_speed;
+
+static i32 set_mouse_obj(ecs_entity_t e) {
+    if (controller->grappling) return -1;
+    mouse_obj_over = e;
+    return 0;
+}
 
 static void handle_mouse_collision(ecs_entity_t self, ecs_entity_t other) {
     (void)self;
 
     if (ecs_has(state.world, other, enemy)) {
-        mouse_obj_over = other;
+        set_mouse_obj(other);
     }
 }
 
@@ -36,9 +43,6 @@ static void on_grapple_finish(void) {
     controller->grappling = false;
     grapple_point = (v2){0, 0};
     grapple_speed = base_grapple_speed;
-
-    vel->x /= 2;
-    vel->y /= 2;
 }
 
 static void pre_grapple(void) {
@@ -74,28 +78,21 @@ static void pre_grapple(void) {
 static void during_grapple(void) {
     const v2* obj_pos = ecs_get(state.world, mouse_obj_over, Position);
     grapple_point = *obj_pos;
+    f32 dt = GetFrameTime();
 
-    f32 angle = atan2f(grapple_point.y - pos->y - 8, grapple_point.x - pos->x - 12);
+    *pos = v2Lerp(*pos, grapple_point, grapple_speed * dt);
 
-    vel->x = cosf(angle) * grapple_speed * GetFrameTime() * 60;
-    vel->y = sinf(angle) * grapple_speed * GetFrameTime() * 60;
-
-    f32 mag = sqrtf(vel->x * vel->x + vel->y * vel->y);
-
-    if (mag > 1000 * GetFrameTime()) {
-        vel->x /= 2;
-        vel->y /= 2;
+    if (grapple_speed > MAX_GRAPPLE_SPEED) {
+        grapple_speed = MAX_GRAPPLE_SPEED;
     }
 
     f32 dist = v2Dist((v2){pos->x + 12, pos->y + 8}, grapple_point);
 
-    if (dist < 5) {
-        printf("grapple finished\n");
-        printf("    dist: %f, speed: %f, mag: %f\n", dist, grapple_speed, mag);
-        on_grapple_finish();
-    }
+    printf("grapple_speed: %f\n", grapple_speed);
+    printf("dist: %f\n", dist);
+    if (dist < 20) on_grapple_finish();
 
-    grapple_speed *= 1.05;
+    grapple_speed += 25 * dt;
 }
 
 static void handle_grapple() {
@@ -118,44 +115,44 @@ static void init(void) {
     ready = true;
 }
 
-static void handle_enemy_collision(ecs_entity_t self, ecs_entity_t other) {
-    (void)self;
+static void handle_enemy_collision(ecs_entity_t other) {
     if (ecs_has(state.world, other, enemy)) {
         ecs_delete(state.world, other);
 
         controller->grappling = false;
 
-        if (!controller->grappling) {
+        if (!controller->grappling && state.plr_dat.lives > 0) {
             state.plr_dat.lives--;
         }
     }
 }
 
+static void handle_ground_collision(const Position* p) {
+    if (controller->grappling) return;
+    controller->on_ground = true;
+    f32 dist = p->y - pos->y;
+    f32 dist_alt = p->y - (pos->y - vel->y); // buffer for fast moving player
+
+    if (dist >= 14 || dist_alt >= 14) {
+        vel->y = 0;
+    }
+}
+
 static void onCollision(ecs_entity_t self, ecs_entity_t other) {
+    (void)self;
     const Position* fp = ecs_get(state.world, other, Position);
 
     if (vel->y <= 0) {
         return;
     }
 
-    PlayerController* cn = ecs_get_mut(state.world, self, PlayerController);
-
     if (ecs_has(state.world, other, enemy)) {
-        handle_enemy_collision(self, other);
+        handle_enemy_collision(other);
     }
 
     if (ecs_has(state.world, other, _ground)) {
-        cn->on_ground = true;
-
-        f32 dist = fp->y - pos->y;
-        f32 dist_alt = fp->y - (pos->y - vel->y); // buffer for fast moving player
-
-        if (dist >= 14 || dist_alt >= 14) {
-            vel->y = 0;
-        }
+        handle_ground_collision(fp);
     }
-
-    (void)other;
 }
 
 static void print_debug(void) {

@@ -40,7 +40,7 @@ void Controller(ecs_iter_t* it) {
             speed *= 1.5;
         }
 
-        if (IsKeyDown(KEY_W) && cn[i].on_ground) {
+        if (IsKeyDown(KEY_W) && cn[i].on_ground && !cn[i].grappling) {
             v[i].y -= jumpPower * delta;
         }
         if (IsKeyDown(KEY_A)) {

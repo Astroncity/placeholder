@@ -11,12 +11,12 @@
       "-I",
       "include/",
       "-o",
-      "build/components/physics.o",
-      "src/components/physics.c"
+      "build/components/transform.o",
+      "src/components/transform.c"
     ],
     "directory": "/home/astro/projects/placeholder",
-    "file": "/home/astro/projects/placeholder/src/components/physics.c",
-    "output": "/home/astro/projects/placeholder/build/components/physics.o"
+    "file": "/home/astro/projects/placeholder/src/components/transform.c",
+    "output": "/home/astro/projects/placeholder/build/components/transform.o"
   },
   {
     "arguments": [
@@ -30,12 +30,12 @@
       "-I",
       "include/",
       "-o",
-      "build/components/transform.o",
-      "src/components/transform.c"
+      "build/components/physics.o",
+      "src/components/physics.c"
     ],
     "directory": "/home/astro/projects/placeholder",
-    "file": "/home/astro/projects/placeholder/src/components/transform.c",
-    "output": "/home/astro/projects/placeholder/build/components/transform.o"
+    "file": "/home/astro/projects/placeholder/src/components/physics.c",
+    "output": "/home/astro/projects/placeholder/build/components/physics.o"
   },
   {
     "arguments": [
@@ -68,25 +68,6 @@
       "-I",
       "include/",
       "-o",
-      "build/core/enemy.o",
-      "src/core/enemy.c"
-    ],
-    "directory": "/home/astro/projects/placeholder",
-    "file": "/home/astro/projects/placeholder/src/core/enemy.c",
-    "output": "/home/astro/projects/placeholder/build/core/enemy.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/cc",
-      "-c",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wno-missing-field-initializer",
-      "-ggdb",
-      "-I",
-      "include/",
-      "-o",
       "build/core/state.o",
       "src/core/state.c"
     ],
@@ -106,12 +87,12 @@
       "-I",
       "include/",
       "-o",
-      "build/components/render.o",
-      "src/components/render.c"
+      "build/core/enemy.o",
+      "src/core/enemy.c"
     ],
     "directory": "/home/astro/projects/placeholder",
-    "file": "/home/astro/projects/placeholder/src/components/render.c",
-    "output": "/home/astro/projects/placeholder/build/components/render.o"
+    "file": "/home/astro/projects/placeholder/src/core/enemy.c",
+    "output": "/home/astro/projects/placeholder/build/core/enemy.o"
   },
   {
     "arguments": [
@@ -131,6 +112,25 @@
     "directory": "/home/astro/projects/placeholder",
     "file": "/home/astro/projects/placeholder/src/core/main.c",
     "output": "/home/astro/projects/placeholder/build/core/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-missing-field-initializer",
+      "-ggdb",
+      "-I",
+      "include/",
+      "-o",
+      "build/components/render.o",
+      "src/components/render.c"
+    ],
+    "directory": "/home/astro/projects/placeholder",
+    "file": "/home/astro/projects/placeholder/src/components/render.c",
+    "output": "/home/astro/projects/placeholder/build/components/render.o"
   },
   {
     "arguments": [
@@ -182,12 +182,12 @@
       "-I",
       "include/",
       "-o",
-      "build/utils/mathEx.o",
-      "src/utils/mathEx.c"
+      "build/prefabs/dragonfly.o",
+      "src/prefabs/dragonfly.c"
     ],
     "directory": "/home/astro/projects/placeholder",
-    "file": "/home/astro/projects/placeholder/src/utils/mathEx.c",
-    "output": "/home/astro/projects/placeholder/build/utils/mathEx.o"
+    "file": "/home/astro/projects/placeholder/src/prefabs/dragonfly.c",
+    "output": "/home/astro/projects/placeholder/build/prefabs/dragonfly.o"
   },
   {
     "arguments": [
@@ -201,12 +201,12 @@
       "-I",
       "include/",
       "-o",
-      "build/prefabs/dragonfly.o",
-      "src/prefabs/dragonfly.c"
+      "build/prefabs/rollingCounter.o",
+      "src/prefabs/rollingCounter.c"
     ],
     "directory": "/home/astro/projects/placeholder",
-    "file": "/home/astro/projects/placeholder/src/prefabs/dragonfly.c",
-    "output": "/home/astro/projects/placeholder/build/prefabs/dragonfly.o"
+    "file": "/home/astro/projects/placeholder/src/prefabs/rollingCounter.c",
+    "output": "/home/astro/projects/placeholder/build/prefabs/rollingCounter.o"
   },
   {
     "arguments": [
@@ -239,12 +239,12 @@
       "-I",
       "include/",
       "-o",
-      "build/prefabs/rollingCounter.o",
-      "src/prefabs/rollingCounter.c"
+      "build/utils/mathEx.o",
+      "src/utils/mathEx.c"
     ],
     "directory": "/home/astro/projects/placeholder",
-    "file": "/home/astro/projects/placeholder/src/prefabs/rollingCounter.c",
-    "output": "/home/astro/projects/placeholder/build/prefabs/rollingCounter.o"
+    "file": "/home/astro/projects/placeholder/src/utils/mathEx.c",
+    "output": "/home/astro/projects/placeholder/build/utils/mathEx.o"
   },
   {
     "arguments": [
