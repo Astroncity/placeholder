@@ -80,9 +80,18 @@ static void during_grapple(void) {
     vel->x = cosf(angle) * grapple_speed * GetFrameTime() * 60;
     vel->y = sinf(angle) * grapple_speed * GetFrameTime() * 60;
 
+    f32 mag = sqrtf(vel->x * vel->x + vel->y * vel->y);
+
+    if (mag > 1000 * GetFrameTime()) {
+        vel->x /= 2;
+        vel->y /= 2;
+    }
+
     f32 dist = v2Dist((v2){pos->x + 12, pos->y + 8}, grapple_point);
 
-    if (dist < 5 || grapple_speed >= 1000) {
+    if (dist < 5) {
+        printf("grapple finished\n");
+        printf("    dist: %f, speed: %f, mag: %f\n", dist, grapple_speed, mag);
         on_grapple_finish();
     }
 

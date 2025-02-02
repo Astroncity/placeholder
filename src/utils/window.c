@@ -44,7 +44,7 @@ void set_window_flags(void) {
     InitWindow(state.screenWidth, state.screenHeight, "Planet Generation Test");
     InitAudioDevice();
     SetMasterVolume(1);
-    SetTargetFPS(60);
+    SetTargetFPS(200);
     SetWindowSize(state.screenWidth * 2, state.screenHeight * 2);
 }
 
