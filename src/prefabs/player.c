@@ -114,6 +114,8 @@ static void handle_enemy_collision(ecs_entity_t self, ecs_entity_t other) {
     if (ecs_has(state.world, other, enemy)) {
         ecs_delete(state.world, other);
 
+        controller->grappling = false;
+
         if (!controller->grappling) {
             state.plr_dat.lives--;
         }
